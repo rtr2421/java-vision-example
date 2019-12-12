@@ -16,6 +16,8 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.vision.VisionThread;
 
@@ -66,6 +68,7 @@ public final class Main {
   private static String configFile = "/boot/frc.json";
   private static List<VideoSource> cameras = new ArrayList<>();
   private static Config config = new Config();
+  private static final String visiontable = "raspberrypi";
 
   private Main() {
   }
@@ -151,12 +154,16 @@ public final class Main {
       startSwitchedCamera(camera);
     }
 
+    NetworkTable table = ntinst.getTable(visiontable);
+    NetworkTableEntry key = table.getEntry("frame");
+
     // start image processing on camera 0 if present
     if (cameras.size() >= 1) {
       VisionThread visionThread = new VisionThread(cameras.get(0),
               new MyPipeline(), pipeline -> {
         // do something with pipeline results
         System.out.printf("processing generation %d\n", pipeline.getVal());
+        key.setNumber(pipeline.getVal());
       });
      
       visionThread.start();
