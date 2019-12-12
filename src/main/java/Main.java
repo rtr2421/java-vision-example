@@ -159,13 +159,12 @@ public final class Main {
 
     // start image processing on camera 0 if present
     if (cameras.size() >= 1) {
-      VisionThread visionThread = new VisionThread(cameras.get(0),
-              new MyPipeline(), pipeline -> {
+      VisionThread visionThread = new VisionThread(cameras.get(0), new MyPipeline(), pipeline -> {
         // do something with pipeline results
         System.out.printf("processing generation %d\n", pipeline.getVal());
         key.setNumber(pipeline.getVal());
       });
-     
+
       visionThread.start();
     }
 
