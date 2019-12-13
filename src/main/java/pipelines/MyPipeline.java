@@ -1,3 +1,5 @@
+package pipelines;
+
 import org.opencv.core.Mat;
 
 import edu.wpi.first.vision.VisionPipeline;

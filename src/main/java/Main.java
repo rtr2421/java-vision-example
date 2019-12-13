@@ -20,6 +20,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.vision.VisionThread;
+import pipelines.MyPipeline;
+import processors.MyPipelineProcessor;
 
 
 public final class Main {
@@ -117,10 +119,12 @@ public final class Main {
 
     // start image processing on camera 0 if present
     if (cameras.size() >= 1) {
+      MyPipelineProcessor p = new MyPipelineProcessor(cameras.get(0), key);
+      if (! p.run()) {
+        System.out.println("Could not run the MyPipeline processor!?");
+      };
       VisionThread visionThread = new VisionThread(cameras.get(0), new MyPipeline(), pipeline -> {
-        // do something with pipeline results
-        System.out.printf("processing generation %d\n", pipeline.getVal());
-        key.setNumber(pipeline.getVal());
+        p.inspect(pipeline);
       });
 
       visionThread.start();
